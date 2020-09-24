@@ -1,0 +1,2 @@
+# paralelas
+Computación Paralela
