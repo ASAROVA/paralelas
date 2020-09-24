@@ -22,6 +22,7 @@ int aleatorio (int minimo=0, int maximo=RAND_MAX )
 }
 /// ////////////////////////////////////////////*/
 
+
 /// Matriz ///////////////////////////////////////
 template<class T>
 class matriz;
@@ -182,5 +183,65 @@ ostream &operator<<(ostream &os, matriz<T> const &M)
 typedef matriz<int>   matrint;
 typedef matriz<float> matflot;
 /// ////////////////////////////////////////////*/
+
+
+/// Functor que mide la demora de una función ////
+template<typename T, typename TF>
+class cronometro
+{
+    TF f;
+public:
+    cronometro() {}
+    void est_funcion(TF F) {f=F;}
+    double operator()(int alto, int ancho=0)
+    {
+        if(!ancho) ancho = alto;
+
+        matriz<T> M(alto,ancho);
+        M.rellenar();
+        matriz<T> N(alto,ancho);
+        N.rellenar();
+
+        clock_t t;
+        t = clock();
+        (M.*f)(N);
+        t = clock()-t;
+        return double(t)/double(CLOCKS_PER_SEC);
+        //return double(t);
+    }
+};
+/// ////////////////////////////////////////////*/
+
+
+/// Rutina de Tabulacion de vectores /////////////
+template <class T, class... TY>
+void tabulador(vector<T> X, TY... Ys)
+{
+    int n = X.size();
+    for(int i=0;i<n;i++)
+    {
+        cout << X[i] << "\t\t";
+        for(auto& Y: {Ys...})
+            cout << Y[i] << "\t\t";
+        SL;
+    }
+}
+/// ////////////////////////////////////////////*/
+
+
+/// Rellenador de vectores por interpolacion /////
+template <class T>
+void interpolar(vector<T>& v,T inicio,T incremento,T fin)
+{
+    v.resize( 1 + (int)(fin-inicio)/(int)incremento );
+    T x = inicio;
+    for(auto& i:v)
+    {
+        i = x;
+        x += incremento;
+    }
+}
+/// ////////////////////////////////////////////*/
+
 
 #endif // MATRIZ_H_INCLUDED
